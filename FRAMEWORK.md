@@ -1,7 +1,121 @@
 # HAAC AI Assurance Framework — Shared Assurance across Different Rules
 
 **Public Working Draft v0.3.0 · 2026-11-03**  
-[Overview / 概要](README.md) · [Tests / 試験](CONFORMANCE.md) · [English](#english)
+[Overview / 概要](README.md) · [Tests / 試験](CONFORMANCE.md) · [English](#english) · [日本語](#日本語)
+
+English-first presentation; Japanese remains normative. This revision does not change the existing core requirements.
+
+## English
+
+### 1. Shared verification while preserving different rules
+
+Safety thresholds and substantive policy judgments may differ. This draft shares the way an operation's applicable rules, versions, evidence, individual verdicts, authorization and actual effect are inspected. It seeks a common, reproducible assurance procedure, not a common risk appetite or a guarantee that everyone agrees.
+
+Identical rules and evidence should produce reproducible results. Different rules may legitimately produce different results. Preserve those differences rather than hiding them in an aggregate score. A joint operation must not omit a required participant merely because its rule is stricter; an independently approved single-party operation has a different scope.
+
+No proprietary implementation, policy language or named operational model is mandatory. The small input language in this laboratory is a reference adapter, not a required replacement for existing policy systems.
+
+### 2. Connection contract and authorization
+
+Record the source requirement/version/section, the authorized operational interpretation, required parties and approved policy versions, evidence provenance/type/unit/freshness, individual verdicts and unresolved obligations, organizational adoption, scoped permission, observed effects and verification procedure.
+
+Applicability and interpretation remain human governance responsibilities. A supplied list does not prove that all relevant laws or contractual obligations were identified. Unknown mandatory requirements remain unresolved. Changes of scope require an authorized new assessment, not silent deletion after seeing an inconvenient result.
+
+The aggregate is INDETERMINATE for an empty set, UNSATISFIED if any verified violation exists, INDETERMINATE if unresolved obligations remain without a violation, and SATISFIED only if all required checks satisfy. Keep unresolved details even when a violation determines the aggregate. Joint authorization additionally requires valid approval, active authority and matching binding. Conflicting requirements are not averaged or voted away. This applies to the declared operation, not every rule worldwide.
+
+HAAP separates verification, adoptability and authorization.[S1] This draft's additional aggregation, outcome fields and serialization are not an adopted HAAP wire protocol. Approval need not be a human click for each operation: an appropriate delegation can apply. Holding an action is not indiscriminate shutdown of all equipment.
+
+### 3. Core requirements R01–R12
+
+#### R01 — Operation and assurance boundary
+
+Specify the operation, resources, effect boundary, participating systems, assumptions, exclusions, and safe behavior when the operation is held. A simulated notification must not be represented as assurance of physical cargo movement.
+
+#### R02 — Accountability, authority and approval
+
+Distinguish the rule owner, evidence provider, adoption approver, executor, and reconciliation/dispute owner. Record delegation scope and validity. A role label or signature alone must not establish real organizational authority.
+
+#### R03 — Versioned rules and time
+
+Bind applicable rules, evaluation method, thresholds, units, versions, evaluation time, and permitted evidence age to the operation. Changed rules or targets must not inherit an old result without revalidation.
+
+#### R04 — Evidence sufficiency and limits
+
+Enumerate required evidence, provenance, verification methods, and unresolved conditions. Missing, conflicting, malformed, or unsupported mandatory evidence must not count as satisfied. Integrity, issuer authentication, and observation truth are distinct claims.
+
+#### R05 — Separate verification, adoption and authorization
+
+Keep condition evaluation, organizational adoption, and operation-specific authorization distinct. Satisfied conditions or a generic reviewed flag must not alone authorize execution. Required approvals must bind the approver to the operation and its content.
+
+#### R06 — Scoped grants and revocation
+
+Bind authorization to operation identity, content, recipient, executor, rule version, validity and allowed effects. Declare revocation/cancellation/update semantics, propagation delay, and treatment of issued grants; recheck at the execution boundary under those semantics.
+
+#### R07 — Enforcement at the effect boundary
+
+Every in-scope path to the declared effect must require valid authorization. A dashboard or decision log is insufficient. Test bypasses, concurrent activity, and state changes between check and effect; exclude uncontrolled paths from the claim.
+
+#### R08 — Uncertainty, retries and recovery
+
+Do not infer completion or non-execution from a lost response, restart or interruption. Reconcile operation identity with durable outcomes and state the scope of duplicate-effect protection. Define conditions for retry, release from hold, cancellation and switching.
+
+#### R09 — Outcome reconciliation
+
+Link and compare the authorized effect with observed and retained outcomes. A mismatch, partial execution or unknown outcome must not be reported as successful completion. Post-effect quarantine or compensation is not prevention or proof that the original effect never occurred.
+
+#### R10 — Linked records and minimum disclosure
+
+Link requirements, evidence references, evaluations, approvals, grants, receipts and updates to the operation, retaining what re-verification needs. Define retention and access. Verification material must not expose private keys or unnecessary personal data.
+
+#### R11 — Independent re-verification
+
+Provide a way to recompute the relevant checks from available evidence and identified rule versions rather than trusting the executor's conclusion. Missing evidence or unknown trust anchors must be reported as unverifiable. Distinguish separate programs, separate personnel and separate organizations.
+
+#### R12 — Change, exceptions and claims
+
+Track the impact of rule/model updates, exceptions and test changes. Preserve failed verification results when an authorized exception process is used. Any conformance claim must include version, scope, assumptions, results, unperformed tests and residual risks.
+
+### 4. Mathematical meaning and verification status
+
+Let `I` be a declared nonempty set of required conditions, `e` the evidence and `cᵢ(e)` a three-valued checker. Authorization requires all `cᵢ(e)` to be satisfied plus approval, active authority and matching binding. The checker bodies can differ by sector. If each checker is sound for its stated property, authorization entails all those properties in the declared scope. Checker soundness, evidence truth and applicability completeness are premises, not consequences.
+
+`PolicyKernel.lean` contains 22 theorem declarations for nonempty all-required authorization, blocking unknowns and violations, binding and authority, monotonic rejection under added requirements, conditional joint soundness, preservation under a semantics-preserving adapter and the information lost by aggregation. The named theorem/test mapping appears in Japanese section 5 below. The adapter theorem assumes preservation for the relevant evidence; it does not prove arbitrary JSON parsers or unit conversions correct.
+
+**The baseline core was kernel-checked successfully in [CI](https://github.com/GhostDriftTheory/verifiable-ai-assurance-framework/actions/runs/41570646962) at commit `e1ab350` on 2026-11-03. This does not verify the API connector.** The formal command requires Lean 4.19.0, checks the theorem file, checks 1,089 generated concrete equalities against Python outputs and rejects three intentionally false claims. Failure or an unavailable toolchain is an error, never a successful proof. The executed 968 abstract comparisons, 150 typed comparisons and 605 finite structural checks are not general proofs.
+
+Earlier Responsibility OS/ADIC/information kernels motivate preserving accountability-relevant distinctions.[S2–S4] Responsibility OS denotes a governance operating layer, not a computer OS. Their proofs do not automatically certify this new implementation.
+
+### 5. Bounded reference profiles
+
+RP-0.3 compares synthetic cold-chain thresholds and synthetic cyber-operation restrictions using the same kernel. Required parties and approved policy digests are trusted harness inputs. Preserve policy identity, source, interpretation, version and rule-specific results. Supported operators are `between/lte/gte/eq/one_of`; unsupported operators and incompatible types/units yield unknown. Temperature uses integer milli-degrees C. Only the explicitly declared `centi-C-v1` exact conversion is supported; other adapters fail closed to unknown.
+
+Permission binds the operation, participants, rules, evidence and approval/authority context. Current logical time is excluded from the digest and checked against a half-open ten-tick permit interval. Evidence may be zero to twenty ticks old. Inventory order alone is normalized; event order and rule changes are not erased. A receiver subprocess rechecks inside the same SQLite transaction as the simulated effect and audit record.
+
+`assessment.authorization` is the current assessment of eligibility for authorization, not itself the retained scoped grant. Execution must also validate the saved grant. Reassessing changed conditions as eligible does not make an older grant reusable.
+
+Each of the 30 policy cases uses a fresh database and one operation. The retained RP-0.2 profile covers 41 execution cases across notification/configuration, including repeated and concurrent requests, process termination, lost replies, recovery and outcome mismatch. Effects, receipts and audit records share a transaction. Retry after rollback relies on that local boundary, not a general inference from missing evidence. Switches and authorized exception overrides are unsupported and rejected.
+
+Trusted components include the operating system, runtime, SQLite, local administrator, harness inputs, database and clock. Organizational authentication, signatures, real-world facts, compromised administrators, actual system-wide bypass resistance, external API effects, distributed revocation, cryptographic security, performance and regulatory conformity remain outside the profile.
+
+### 6. Evidence and claims
+
+New policy evidence uses `haac-policy-evidence/0.3`; retained execution evidence keeps `haac-reference-evidence/0.2` with framework version 0.3.0. Both reference all eight release files. Keep source bytes, source requirement versions, scope, verdicts, observations, histories and outstanding reviews. A digest alone is neither an identity credential nor proof of fact.
+
+A separate program recalculates results without importing the executor. The programs share the published specification and author, not organizational independence. Whole-framework conformity needs applicable R01–R12 design reviews and actual-system evidence in addition to reference tests. External products need actual-effect adapters and trust/authority review; fabricated matching records are not certification.
+
+Map external requirements through source/version/section → reviewed interpretation → R identifier → T/P test → evidence → non-mechanized remainder. Such mappings are not complete compliance with OECD, AISI, legislation or a sector standard. No public authority's endorsement or global consensus is claimed.
+
+### 7. Optional API adapter boundary (connector v0.1.0)
+
+The added file `openai_api_experiment.py` is a **proposal source and bounded experiment adapter**, not the policy owner. It applies the existing reference semantics to ten existing P cases. Only a well-formed `REQUEST_EXECUTION` with the exact predeclared operation reaches `assurance.py`; `HOLD`, refusal, incomplete output, API failure or a changed operation cannot dispatch an effect. Approval, authority, evidence, policy pins and required parties come from the fixed local fixture, never from model assertions. A changed operation is rejected, not repaired into a passing one.
+
+The model sees the initial context only. P18/P19/P30 inject post-grant changes or logical-time advancement at the harness, so their causation must be described as fault injection. The same accepted proposal drives an intentionally permissive SQLite control and the existing gated target. Neither controls a real service, cargo or device. The control is not an OpenAI product behavior or a general benchmark.
+
+Saved API evidence uses `haac-openai-experiment/0.1`, with `OFFLINE_SYNTHETIC` and `LIVE_OPENAI_API` distinguished. It records all nine source files, the exact request, projected assistant response, returned model name, usage when present, local observations and remaining limitations. Hidden reasoning items and API credentials are excluded. Required requests and the future fault schedule are fixed by the local experiment; no real source-truth claim follows.
+
+Use the adapter's `verify` subcommand for this envelope. It checks the saved proposal and delegates gate/receipt recomputation to existing `verify.py` without importing the executor. Adapter parsing and binding checks are shared code; independence is at the core evaluator level, not a separate organization. No new API call or local effect occurs during verification. A local transcript and digest do not authenticate a provider response cryptographically.
+
+The core version and existing evidence formats remain 0.3.0; the connector has its own version and does not change R01–R12. All-model safety, arbitrary operation generation, production enforcement, real-world policy validity and full API/adapter formal verification remain unclaimed. A model HOLD is not a gate interception; zero prohibited proposals means zero prohibited requests exercised, not a perfect prevention rate.
 
 ## 日本語
 
@@ -162,7 +276,7 @@
 | 別の条件から異なる結論を認める | `different_rules_different_results` | P01。P02は両者が成立する正常例 |
 | 単独の許可を共同操作へ流用しない | `single_party_not_joint_permission` | P10, P18 |
 
-**新規22命題のLeanソースは、この配布の作成環境でカーネル検査できていません。** 証明候補を検証済みとは表示しません。`python assurance.py formal`はLean 4.19.0を必須にし、ソースの検査、Pythonの出力と1,089の具体入力命題の照合、3つの偽命題の拒否を実行します。未導入や失敗は終了コード2です。
+**既存の22命題は、2026年11月3日の[コアCI](https://github.com/GhostDriftTheory/verifiable-ai-assurance-framework/actions/runs/41570646962)、コミット`e1ab350`でLean 4.19.0による検査成功を確認しました。** この結果は既存モデルに限定し、追加API実験の証明とはしません。`python assurance.py formal`はLean 4.19.0を必須にし、ソースの検査、Pythonの出力と1,089の具体入力命題の照合、3つの偽命題の拒否を実行します。未導入や失敗は終了コード2です。
 
 Python同士の968組の抽象入力照合、150組の型付き条件照合、605件の有限構造検査は実行済みです。これらは一般定理の証明ではありません。また、Lean検査後も、任意のPython入力、JSON解析、SQLite、暗号、物理設備までの実装同値性を示したことにはなりません。
 
@@ -224,105 +338,15 @@ OECD、AISI、国内ガイドライン等の要求は「出典・版・節 → �
 
 本版の合成ルールを、特定の法令や国際原則を完全に実装したものとして表示してはなりません。正式な利用では、該当業務の専門家による解釈審査、当事者の合意、外部再実行、知財と利用条件の整理が必要です。
 
-## English
+### 9. 任意のAPI接続の境界（追加Python v0.1.0）
 
-### 1. Shared verification while preserving different rules
+`openai_api_experiment.py`は、**提案を取得して限定的な試験へ接続する部分**です。基準を決める主体ではありません。既存の10個のPケースを使い、形式が正しく、事前固定した操作と完全に一致する`REQUEST_EXECUTION`だけを既存`assurance.py`へ渡します。保留、拒否、未完了、API失敗、対象操作の変更では操作しません。承認、権限、証拠、条件の照合値、必須当事者をモデルの主張で上書きせず、対象不一致を都合のよい操作へ補正しません。
 
-Safety thresholds and substantive policy judgments may differ. This draft shares the way an operation's applicable rules, versions, evidence, individual verdicts, authorization and actual effect are inspected. It seeks a common, reproducible assurance procedure, not a common risk appetite or a guarantee that everyone agrees.
+モデルへ渡すのは初期条件です。P18、P19、P30の許可後の変更は試験プログラムによる障害投入として記録し、モデルが変更したとは扱いません。同じ提案を、条件検査を意図的に省いた対照と既存ゲートへ渡します。いずれも隔離されたローカルSQLiteへの模擬作用であり、実サービス、貨物、機器を操作しません。対照はOpenAI製品の標準動作を表すものではありません。
 
-Identical rules and evidence should produce reproducible results. Different rules may legitimately produce different results. Preserve those differences rather than hiding them in an aggregate score. A joint operation must not omit a required participant merely because its rule is stricter; an independently approved single-party operation has a different scope.
+追加形式`haac-openai-experiment/0.1`は、`OFFLINE_SYNTHETIC`と`LIVE_OPENAI_API`を区別し、9ファイルのハッシュ、送信内容、必要部分に限定した応答、返却されたモデル名、取得できた使用量、作用の観測、保証範囲を記録します。推論用出力項目とAPIキーは保存しません。再確認には追加Pythonの`verify`を使い、既存`verify.py`で当時の条件と作用を再計算します。アダプターの読取り処理は共通であり、独立性は中核評価器の実装上の分離に限ります。別組織による監査ではなく、記録のハッシュもAPI提供者の電子署名ではありません。
 
-No proprietary implementation, policy language or named operational model is mandatory. The small input language in this laboratory is a reference adapter, not a required replacement for existing policy systems.
-
-### 2. Connection contract and authorization
-
-Record the source requirement/version/section, the authorized operational interpretation, required parties and approved policy versions, evidence provenance/type/unit/freshness, individual verdicts and unresolved obligations, organizational adoption, scoped permission, observed effects and verification procedure.
-
-Applicability and interpretation remain human governance responsibilities. A supplied list does not prove that all relevant laws or contractual obligations were identified. Unknown mandatory requirements remain unresolved. Changes of scope require an authorized new assessment, not silent deletion after seeing an inconvenient result.
-
-The aggregate is INDETERMINATE for an empty set, UNSATISFIED if any verified violation exists, INDETERMINATE if unresolved obligations remain without a violation, and SATISFIED only if all required checks satisfy. Keep unresolved details even when a violation determines the aggregate. Joint authorization additionally requires valid approval, active authority and matching binding. Conflicting requirements are not averaged or voted away. This applies to the declared operation, not every rule worldwide.
-
-HAAP separates verification, adoptability and authorization.[S1] This draft's additional aggregation, outcome fields and serialization are not an adopted HAAP wire protocol. Approval need not be a human click for each operation: an appropriate delegation can apply. Holding an action is not indiscriminate shutdown of all equipment.
-
-### 3. Core requirements R01–R12
-
-#### R01 — Operation and assurance boundary
-
-Specify the operation, resources, effect boundary, participating systems, assumptions, exclusions, and safe behavior when the operation is held. A simulated notification must not be represented as assurance of physical cargo movement.
-
-#### R02 — Accountability, authority and approval
-
-Distinguish the rule owner, evidence provider, adoption approver, executor, and reconciliation/dispute owner. Record delegation scope and validity. A role label or signature alone must not establish real organizational authority.
-
-#### R03 — Versioned rules and time
-
-Bind applicable rules, evaluation method, thresholds, units, versions, evaluation time, and permitted evidence age to the operation. Changed rules or targets must not inherit an old result without revalidation.
-
-#### R04 — Evidence sufficiency and limits
-
-Enumerate required evidence, provenance, verification methods, and unresolved conditions. Missing, conflicting, malformed, or unsupported mandatory evidence must not count as satisfied. Integrity, issuer authentication, and observation truth are distinct claims.
-
-#### R05 — Separate verification, adoption and authorization
-
-Keep condition evaluation, organizational adoption, and operation-specific authorization distinct. Satisfied conditions or a generic reviewed flag must not alone authorize execution. Required approvals must bind the approver to the operation and its content.
-
-#### R06 — Scoped grants and revocation
-
-Bind authorization to operation identity, content, recipient, executor, rule version, validity and allowed effects. Declare revocation/cancellation/update semantics, propagation delay, and treatment of issued grants; recheck at the execution boundary under those semantics.
-
-#### R07 — Enforcement at the effect boundary
-
-Every in-scope path to the declared effect must require valid authorization. A dashboard or decision log is insufficient. Test bypasses, concurrent activity, and state changes between check and effect; exclude uncontrolled paths from the claim.
-
-#### R08 — Uncertainty, retries and recovery
-
-Do not infer completion or non-execution from a lost response, restart or interruption. Reconcile operation identity with durable outcomes and state the scope of duplicate-effect protection. Define conditions for retry, release from hold, cancellation and switching.
-
-#### R09 — Outcome reconciliation
-
-Link and compare the authorized effect with observed and retained outcomes. A mismatch, partial execution or unknown outcome must not be reported as successful completion. Post-effect quarantine or compensation is not prevention or proof that the original effect never occurred.
-
-#### R10 — Linked records and minimum disclosure
-
-Link requirements, evidence references, evaluations, approvals, grants, receipts and updates to the operation, retaining what re-verification needs. Define retention and access. Verification material must not expose private keys or unnecessary personal data.
-
-#### R11 — Independent re-verification
-
-Provide a way to recompute the relevant checks from available evidence and identified rule versions rather than trusting the executor's conclusion. Missing evidence or unknown trust anchors must be reported as unverifiable. Distinguish separate programs, separate personnel and separate organizations.
-
-#### R12 — Change, exceptions and claims
-
-Track the impact of rule/model updates, exceptions and test changes. Preserve failed verification results when an authorized exception process is used. Any conformance claim must include version, scope, assumptions, results, unperformed tests and residual risks.
-
-### 4. Mathematical meaning and verification status
-
-Let `I` be a declared nonempty set of required conditions, `e` the evidence and `cᵢ(e)` a three-valued checker. Authorization requires all `cᵢ(e)` to be satisfied plus approval, active authority and matching binding. The checker bodies can differ by sector. If each checker is sound for its stated property, authorization entails all those properties in the declared scope. Checker soundness, evidence truth and applicability completeness are premises, not consequences.
-
-`PolicyKernel.lean` contains 22 candidate theorem declarations for nonempty all-required authorization, blocking unknowns and violations, binding and authority, monotonic rejection under added requirements, conditional joint soundness, preservation under a semantics-preserving adapter and the information lost by aggregation. The named theorem/test mapping appears in the table above. The adapter theorem assumes preservation for the relevant evidence; it does not prove arbitrary JSON parsers or unit conversions correct.
-
-**The new Lean source has not been kernel-checked in the authoring environment.** The formal command requires Lean 4.19.0, checks the candidate file, checks 1,089 generated concrete equalities against Python outputs and rejects three intentionally false claims. Failure or an unavailable toolchain is an error, never a successful proof. The executed 968 abstract comparisons, 150 typed comparisons and 605 finite structural checks are not general proofs.
-
-Earlier Responsibility OS/ADIC/information kernels motivate preserving accountability-relevant distinctions.[S2–S4] Responsibility OS denotes a governance operating layer, not a computer OS. Their proofs do not automatically certify this new implementation.
-
-### 5. Bounded reference profiles
-
-RP-0.3 compares synthetic cold-chain thresholds and synthetic cyber-operation restrictions using the same kernel. Required parties and approved policy digests are trusted harness inputs. Preserve policy identity, source, interpretation, version and rule-specific results. Supported operators are `between/lte/gte/eq/one_of`; unsupported operators and incompatible types/units yield unknown. Temperature uses integer milli-degrees C. Only the explicitly declared `centi-C-v1` exact conversion is supported; other adapters fail closed to unknown.
-
-Permission binds the operation, participants, rules, evidence and approval/authority context. Current logical time is excluded from the digest and checked against a half-open ten-tick permit interval. Evidence may be zero to twenty ticks old. Inventory order alone is normalized; event order and rule changes are not erased. A receiver subprocess rechecks inside the same SQLite transaction as the simulated effect and audit record.
-
-`assessment.authorization` is the current assessment of eligibility for authorization, not itself the retained scoped grant. Execution must also validate the saved grant. Reassessing changed conditions as eligible does not make an older grant reusable.
-
-Each of the 30 policy cases uses a fresh database and one operation. The retained RP-0.2 profile covers 41 execution cases across notification/configuration, including repeated and concurrent requests, process termination, lost replies, recovery and outcome mismatch. Effects, receipts and audit records share a transaction. Retry after rollback relies on that local boundary, not a general inference from missing evidence. Switches and authorized exception overrides are unsupported and rejected.
-
-Trusted components include the operating system, runtime, SQLite, local administrator, harness inputs, database and clock. Organizational authentication, signatures, real-world facts, compromised administrators, actual system-wide bypass resistance, external API effects, distributed revocation, cryptographic security, performance and regulatory conformity remain outside the profile.
-
-### 6. Evidence and claims
-
-New policy evidence uses `haac-policy-evidence/0.3`; retained execution evidence keeps `haac-reference-evidence/0.2` with framework version 0.3.0. Both reference all eight release files. Keep source bytes, source requirement versions, scope, verdicts, observations, histories and outstanding reviews. A digest alone is neither an identity credential nor proof of fact.
-
-A separate program recalculates results without importing the executor. The programs share the published specification and author, not organizational independence. Whole-framework conformity needs applicable R01–R12 design reviews and actual-system evidence in addition to reference tests. External products need actual-effect adapters and trust/authority review; fabricated matching records are not certification.
-
-Map external requirements through source/version/section → reviewed interpretation → R identifier → T/P test → evidence → non-mechanized remainder. Such mappings are not complete compliance with OECD, AISI, legislation or a sector standard. No public authority's endorsement or global consensus is claimed.
+既存の版番号、証拠形式、R01〜R12は変更しません。API接続には別の版を付けます。全モデルの安全性、自由な操作生成、本番での強制、現実の基準の妥当性、APIや追加Python全体の形式証明は主張しません。モデルの保留をゲートによる遮断に数えず、禁止提案がなければ当該検証件数は0と報告します。
 
 ## References / 参照
 
