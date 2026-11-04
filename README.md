@@ -19,6 +19,16 @@ The same procedure covers structurally different rules: a cyber operator's impac
 
 This supports agreement about **how a decision was justified**, not a mathematical guarantee of agreement about values. Authorized people determine applicability, interpretation and acceptable evidence. The framework does not prove that their choices are legitimate or complete.
 
+### When a problem occurs: trace its cause and the relevant responsibilities
+
+**The shared procedure also helps explain what went wrong—not only whether an operation should have been allowed.** The framework requires rules and their owners, applicable versions, evidence references, individual evaluations, adoption decisions, approvals, scoped permissions, and observed effects to be linked to the same operation (see R02, R03, R05, R09–R11 in `FRAMEWORK.md`). This makes it possible to examine different kinds of failure without treating them as the same issue:
+
+- **Problem with the safety rule:** The operation followed the approved rule, but the rule itself may have been inadequate. Examine who selected, interpreted and approved that rule, and on what basis.
+- **Problem with the evidence:** Required information was missing, outdated or possibly inaccurate. Examine its source, the required validation and what remains unverified.
+- **Problem with the decision or execution:** A condition was not met but the operation was approved or carried out, or the observed result differed from the authorized action. Trace the evaluation, approval, enforcement and outcome records.
+
+**Common verification and linked records support evidence-based investigation and allocation of responsibilities among participating organizations. They do not automatically establish fault or legal liability.** The present reference implementation uses synthetic conditions and local SQLite effects; real organizational identities and authority, the truth of external observations, complete operational records and production effects have not been independently established. Missing evidence must remain an unresolved finding, not a forced attribution.
+
 ### A concrete example
 
 These are synthetic rules, not actual pharmaceutical standards or legislation.
@@ -161,6 +171,16 @@ The draft remains source-available **without an OSS license**; reuse, redistribu
 目指すのは**安全基準の一本化ではなく、異なる基準を尊重したまま運用できる、検証の共通ルール**です。全員が同じ結論になる必要はありません。同じルールと同じ証拠に対する結果を再現でき、異なる結果の理由を当事者と第三者が確かめられることを重視します。
 
 そのために、条件の検証、組織としての採用、操作の許可、実際の作用を分離します。**AIの提案と実行を分けることは、この共通ルールを現場で機能させる仕組みです。**
+
+### 問題が起きたとき：原因と関係主体を切り分ける
+
+**共通の検証方法は、問題の予防だけでなく「どこに問題があったのか」を調べるためにも役立ちます。** 仕様では、基準とその設定主体・版、証拠の出所、各条件の判定、組織としての採用・承認、操作ごとの許可、実際に観測した結果を、同じ操作に対応付けて記録することを求めています（`FRAMEWORK.md` のR02、R03、R05、R09〜R11）。
+
+- **安全基準の問題：** 決めた基準どおりに判定・実行したものの、基準自体が不適切だった可能性がある。誰がその基準を設定・解釈・承認したかを調べる。
+- **証拠の問題：** 必要な情報が欠けていた、古かった、または誤っていた可能性がある。証拠の提供元、確認手順、未確認事項を調べる。
+- **判断・実行の問題：** 条件を満たしていないのに許可・実行された、あるいは許可内容と実際の結果が異なる。検証、採用・承認、実行制御、結果確認のどこに不整合があったかを調べる。
+
+こうして、**企業ごとに安全基準が違っていても、関係主体が共通の記録と再検証結果を使い、原因究明と責任分担を検討できる**ことが重要です。ただし、**責任の所在や法的責任を数学が自動的に確定するわけではありません。** 本版の参照実装は合成条件とローカルSQLiteの模擬作用を対象としており、実在組織の身元・権限、外部の観測事実の真実性、現実の全履歴や実設備の作用を保証していません。証拠が足りない部分は、無理に特定せず未確認として残します。
 
 ### 30秒で分かる例
 
